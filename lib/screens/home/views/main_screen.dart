@@ -200,7 +200,7 @@ class MainScreen extends StatelessWidget{
                     'Tranzacții',
                     style: TextStyle(
                         fontSize: 16,
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.bold
                     ),
                   ),
