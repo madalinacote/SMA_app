@@ -1,4 +1,5 @@
 // v1.0 -- non-dynamic version
+// v1.0.1 -- partially dynamic, but not linked with firebase
 
 import 'package:flutter/material.dart';
 import 'package:sma_app/screens/home/views/home_screen.dart';
