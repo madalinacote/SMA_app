@@ -29,7 +29,7 @@ class _AddExpenseState extends State<AddExpense> {
     'travel'
   ];
 
-  String iconSelected = '';
+
 
   @override
   void initState() {
@@ -102,6 +102,9 @@ class _AddExpenseState extends State<AddExpense> {
                           context: context,
                           builder: (ctx) {
                             bool isExpanded = false;
+                            String iconSelected = '';
+                            late Color categoryColor = Colors.white;
+
                             return StatefulBuilder(
                               builder: (context, setState) {
                                 return AlertDialog(
@@ -205,24 +208,84 @@ class _AddExpenseState extends State<AddExpense> {
                                       const SizedBox(height: 16),
                                       TextFormField( // field for completing with the color of the new category
                                         onTap: () {
-                                          ColorPicker(
-                                            pickerColor: Colors.blue,
-                                            onColorChanged: (value) {},
+                                          showDialog(
+                                              context: context,
+                                              builder: (ctx2) {
+                                                return AlertDialog(
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      ColorPicker(
+                                                        pickerColor: categoryColor,
+                                                        onColorChanged: (value) {
+                                                          setState(() {
+                                                            categoryColor = value;
+                                                          });
+                                                        },
+                                                      ),
+                                                      SizedBox(
+                                                        width: double.infinity,
+                                                        height: 50,
+                                                        child: TextButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(ctx2);
+                                                            },
+                                                            style: TextButton.styleFrom(
+                                                                backgroundColor: Colors.blue,
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(12)
+                                                                )
+                                                            ),
+                                                            child: const Text(
+                                                              "OK",
+                                                              style: TextStyle(
+                                                                  color: Colors.white
+                                                              ),
+                                                            )
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }
                                           );
                                         },
                                         textAlignVertical: TextAlignVertical.center,
                                         readOnly: true,
                                         decoration: InputDecoration(
+                                          isDense: true,
                                           filled: true,
-                                          fillColor: Colors.white,
+                                          fillColor: categoryColor,
                                           hintText: 'Culoare',
                                           border: OutlineInputBorder(
-                                              borderRadius: BorderRadius
-                                                  .circular(12),
+                                              borderRadius: BorderRadius.circular(12),
                                               borderSide: BorderSide.none
                                           ),
                                         ),
                                       ),
+                                      const SizedBox(height: 16),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        height: kToolbarHeight,
+                                        child: TextButton(
+                                            onPressed: () {
+                                              // create category object and POP
+                                              Navigator.pop(context);
+                                            },
+                                            style: TextButton.styleFrom(
+                                                backgroundColor: Colors.blue,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(12)
+                                                )
+                                            ),
+                                            child: const Text(
+                                              "OK",
+                                              style: TextStyle(
+                                                  color: Colors.white
+                                              ),
+                                            )
+                                        ),
+                                      )
                                     ],
                                   ),
                                 );
