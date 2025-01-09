@@ -260,7 +260,7 @@ class MainScreen extends StatelessWidget{
                                       transactionsData[i]['name'],
                                       style: TextStyle(
                                           fontSize: 15,
-                                          color: Theme.of(context).colorScheme.onBackground,
+                                          color: Theme.of(context).colorScheme.onSurface,
                                           fontWeight: FontWeight.w500
                                       ),
                                     ),
@@ -273,7 +273,7 @@ class MainScreen extends StatelessWidget{
                                       transactionsData[i]['totalAmount'],
                                       style: TextStyle(
                                           fontSize: 15,
-                                          color: Theme.of(context).colorScheme.onBackground,
+                                          color: Theme.of(context).colorScheme.onSurface,
                                           fontWeight: FontWeight.w400
                                       ),
                                     ),
