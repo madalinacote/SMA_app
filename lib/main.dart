@@ -5,8 +5,8 @@ import 'package:sma_app/app.dart';
 import 'simple_bloc_observer.dart';
 
 void main() async {
-  //WidgetsFlutterBinding.ensureInitialized();
-  //await Firebase.initializeApp();
-  //Bloc.observer = SimpleBlocObserver();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  Bloc.observer = SimpleBlocObserver();
   runApp(const MyApp());
 }
