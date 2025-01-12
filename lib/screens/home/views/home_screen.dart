@@ -6,10 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sma_app/screens/add_expense/blocs/create_category_bloc/create_category_bloc.dart';
+import 'package:sma_app/screens/add_expense/blocs/get_categories_bloc/get_categories_bloc.dart';
 import 'package:sma_app/screens/add_expense/views/add_expense.dart';
+import 'package:sma_app/screens/home/blocs/get_expenses_bloc/get_expenses_bloc.dart';
 import 'package:sma_app/screens/home/views/main_screen.dart';
-import 'package:flutter/src/widgets/navigator.dart';
+//import 'package:flutter/src/widgets/navigator.dart';
 
+import '../../add_expense/blocs/create_expense_bloc/create_expense_bloc.dart';
 import '../../stats/stats.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,61 +30,94 @@ class HomeScreen extends StatefulWidget {
 
 
   @override
-  Widget build(BuildContext context){
-    return Scaffold(
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(30)
-        ),
-        child: BottomNavigationBar(
-          onTap: (value){
-            setState(() {
-              index = value;
-            });
-          },
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          elevation: 3,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(
-                  CupertinoIcons.home,    // home icon from the bottom of the screen that changes its colour to show that we are in the home screen
-                  color: index == 0 ? selectedItem : unselectedItem   // changing colour -> 0 means we clicked home
+  Widget build(BuildContext context) {
+    return BlocBuilder<GetExpensesBloc, GetExpensesState>(
+      builder: (context, state) {
+        if (state is GetExpensesSuccess) {
+          return Scaffold(
+              bottomNavigationBar: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(30)
+                ),
+                child: BottomNavigationBar(
+                    onTap: (value) {
+                      setState(() {
+                        index = value;
+                      });
+                    },
+                    showSelectedLabels: false,
+                    showUnselectedLabels: false,
+                    elevation: 3,
+                    items: [
+                      BottomNavigationBarItem(
+                          icon: Icon(
+                              CupertinoIcons.home,
+                              // home icon from the bottom of the screen that changes its colour to show that we are in the home screen
+                              color: index == 0
+                                  ? selectedItem
+                                  : unselectedItem // changing colour -> 0 means we clicked home
+                          ),
+                          label: 'Home'
+                      ),
+                      BottomNavigationBarItem(
+                          icon: Icon(
+                              CupertinoIcons.graph_square_fill,
+                              // statistics screen button that changes colour to indicate which screen are we on
+                              color: index == 1
+                                  ? selectedItem
+                                  : unselectedItem // changing colour -> 1 means we clicked statistics
+                          ),
+                          label: 'Stats'
+                      )
+                    ]
+                ),
               ),
-              label: 'Home'
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                    CupertinoIcons.graph_square_fill,  // statistics screen button that changes colour to indicate which screen are we on
-                    color: index == 1 ? selectedItem : unselectedItem   // changing colour -> 1 means we clicked statistics
-                ),
-                label: 'Stats'
-            )
-          ]
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => BlocProvider(
-                    create: (context) => CreateCategoryBloc(
-                      FirebaseExpenseRepo()
+              floatingActionButtonLocation: FloatingActionButtonLocation
+                  .centerDocked,
+              floatingActionButton: FloatingActionButton(
+                onPressed: () async {
+                  var newExpense = await Navigator.push(
+                    context,
+                    MaterialPageRoute<Expense>(
+                      builder: (BuildContext context) =>
+                          MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) =>
+                                      CreateCategoryBloc(FirebaseExpenseRepo()),
+                                ),
+                                BlocProvider(
+                                  create: (context) =>
+                                  GetCategoriesBloc(FirebaseExpenseRepo())..add(GetCategories()
+                                    ),
+                                ),
+                                BlocProvider(
+                                  create: (context) =>
+                                      CreateExpenseBloc(FirebaseExpenseRepo()),
+                                ),
+                              ],
+                              child: const AddExpense()
+                          ),
                     ),
-                    child: const AddExpense()
-                  ),
+                  );
+
+                },
+                child: const Icon(
+                  CupertinoIcons
+                      .add, // middle "add" button for adding a new expense to the list
                 ),
-            );
-          },
-            child: const Icon(
-              CupertinoIcons.add,    // middle "add" button for adding a new expense to the list
+              ),
+              body: index == 0
+                  ? MainScreen(state.expenses)
+                  : const StatScreen());
+        } else {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
             ),
-      ),
-      body: index == 0
-          ? const MainScreen()
-          : const StatScreen()
+          );
+        }
+      }
     );
   }
 }
