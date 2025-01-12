@@ -100,7 +100,11 @@ class HomeScreen extends StatefulWidget {
                           ),
                     ),
                   );
-
+                  if (newExpense != null) {
+                    setState(() {
+                      state.expenses.insert(0, newExpense);
+                    });
+                  }
                 },
                 child: const Icon(
                   CupertinoIcons
